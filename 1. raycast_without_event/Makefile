@@ -6,12 +6,12 @@
 #    By: yejin <yejin@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/24 14:02:09 by yejin             #+#    #+#              #
-#    Updated: 2022/06/08 14:52:28 by yejin            ###   ########.fr        #
+#    Updated: 2022/06/10 01:38:21 by yejin            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = gcc
-CFLAGS = -I $(HEAD_PATH) -I $(MLX) -Wall -Wextra -Werror
+CFLAGS = -I $(HEAD_PATH) -I $(MLX) -Wall -Wextra -Werror -g
 GL_LINK = -L $(MLX) -lmlx -framework OpenGL -framework AppKit
 
 NAME	= raycaster
