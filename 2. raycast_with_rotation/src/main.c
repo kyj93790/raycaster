@@ -44,10 +44,20 @@ void	draw_vertical_line(t_img *img, int start, int end, int curr_w, int color)
 {
 	int	i;
 
-	i = start;
+	i = 0;
+	while (i < start)
+	{
+		draw_img(img, curr_w, i, 0);
+		i++;
+	}
 	while (i <= end)
 	{
 		draw_img(img, curr_w, i, color);
+		i++;
+	}
+	while (i < h)
+	{
+		draw_img(img, curr_w, i, 0);
 		i++;
 	}
 	return ;
