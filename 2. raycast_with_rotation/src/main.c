@@ -44,26 +44,36 @@ void	draw_vertical_line(t_img *img, int start, int end, int curr_w, int color)
 {
 	int	i;
 
-	i = start;
+	i = 0;
+	while (i < start)
+	{
+		draw_img(img, curr_w, i, 0);
+		i++;
+	}
 	while (i <= end)
 	{
 		draw_img(img, curr_w, i, color);
 		i++;
 	}
+	while (i < h)
+	{
+		draw_img(img, curr_w, i, 0);
+		i++;
+	}
 	return ;
 }
 
-void	draw_sight(t_img *img, double posX, double posY, double dirX, double dirY, double planeX, double planeY)
+void	draw_sight(t_state *state)
 {
 	for (int x = 0; x < w; x++)
 	{
 		double cameraX = -2*x/(double)w + 1;
 		// double cameraX = 2*x / (double)w - 1;
-		double rayDirX = dirX + planeX*cameraX;
-		double rayDirY = dirY + planeY*cameraX;
+		double rayDirX = state->dirX + state->planeX*cameraX;
+		double rayDirY = state->dirY + state->planeY*cameraX;
 
-		int mapX = (int)posX;
-		int mapY = (int)posY;
+		int mapX = (int)(state->posX);
+		int mapY = (int)(state->posY);
 
 		double sideDistX; 
 		double sideDistY;
@@ -82,22 +92,22 @@ void	draw_sight(t_img *img, double posX, double posY, double dirX, double dirY, 
 		if (rayDirX < 0)
 		{
 			stepX = -1;
-			sideDistX = (posX - mapX) * deltaDistX;
+			sideDistX = (state->posX - mapX) * deltaDistX;
 		}
 		else
 		{
 			stepX = 1;
-			sideDistX = (mapX + 1.0 - posX) * deltaDistX;
+			sideDistX = (mapX + 1.0 - state->posX) * deltaDistX;
 		}
 		if (rayDirY < 0)
 		{
 			stepY = -1;
-			sideDistY = (posY - mapY) * deltaDistY;
+			sideDistY = (state->posY - mapY) * deltaDistY;
 		}
 		else
 		{
 			stepY = 1;
-			sideDistY = (mapY + 1.0 - posY) * deltaDistY;
+			sideDistY = (mapY + 1.0 - state->posY) * deltaDistY;
 		}
 
 		//perform DDA
@@ -119,8 +129,8 @@ void	draw_sight(t_img *img, double posX, double posY, double dirX, double dirY, 
 			if (worldMap[mapY][mapX] > 0) hit = 1;
 		}
 		//Calculate distance projected on camera direction (Euclidean distance will give fisheye effect!)
-		if (side == 0) perpWallDist = (mapX - posX + (1 - stepX) / 2) / rayDirX;
-		else           perpWallDist = (mapY - posY + (1 - stepY) / 2) / rayDirY;
+		if (side == 0) perpWallDist = (mapX - state->posX + (1 - stepX) / 2) / rayDirX;
+		else           perpWallDist = (mapY - state->posY + (1 - stepY) / 2) / rayDirY;
 
 		//Calculate height of line to draw on screen
 		int lineHeight = (int)(2*h / perpWallDist);
@@ -156,32 +166,32 @@ void	draw_sight(t_img *img, double posX, double posY, double dirX, double dirY, 
 			if (side == 1)
 				curr_color = gray;
 		}
-		draw_vertical_line(img, drawStart, drawEnd, x, curr_color);
+		draw_vertical_line(&(state->img), drawStart, drawEnd, x, curr_color);
 	}
 }
 
 int main(void)
 {
-	void	*mlx_ptr;
-	void	*win_ptr;
-	t_img	img;
+	t_state	state;
 
-	mlx_ptr = mlx_init();
-	win_ptr = mlx_new_window(mlx_ptr, w, h, "raycaster");
-
-	double posX = 22, posY = 12;		// start position of player
-	double dirX = -1, dirY = 0;			// initial direction (left)
-	double planeX = 0, planeY = 0.66;	// camera plane
-
+	state.mlx_ptr = mlx_init();
+	state.win_ptr = mlx_new_window(state.mlx_ptr, w, h, "raycaster");
+	state.posX = 22;
+	state.posY = 12;
+	state.dirX = -1;
+	state.dirY = 0;
+	state.planeX = 0;
+	state.planeY = 0.66;
 	// double time = 0;
 	// double oldtime = 0;
 
 	// first 3d img print
-	img.img_ptr = mlx_new_image(mlx_ptr, w, h);
-	img.addr = mlx_get_data_addr(img.img_ptr, &(img.bits_per_pixel), &(img.line_len), &(img.endian));
-	draw_sight(&img, posX, posY, dirX, dirY, planeX, planeY);
-
-	mlx_put_image_to_window(mlx_ptr, win_ptr, img.img_ptr, 0, 0);
-	mlx_loop(mlx_ptr);
+	state.img.img_ptr = mlx_new_image(state.mlx_ptr, w, h);
+	state.img.addr = mlx_get_data_addr(state.img.img_ptr, &(state.img.bits_per_pixel), &(state.img.line_len), &(state.img.endian));
+	draw_sight(&state);
+	mlx_put_image_to_window(state.mlx_ptr, state.win_ptr, state.img.img_ptr, 0, 0);
+	mlx_hook(state.win_ptr, key_press, 0, event_key, &state);
+	// mlx_put_image_to_window(state.mlx_ptr, state.win_ptr, state.img.img_ptr, 0, 0);
+	mlx_loop(state.mlx_ptr);
 	return (0);
 }
