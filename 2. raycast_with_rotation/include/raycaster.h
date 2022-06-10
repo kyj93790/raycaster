@@ -23,6 +23,19 @@
 # define white 0xFFFFFF
 # define gray 0x7f7f7f
 
+# define key_press 2
+# define buttonpress 4
+
+# define KEY_W 13
+# define KEY_A 0
+# define KEY_S 1
+# define KEY_D 2
+# define KEY_LA 123
+# define KEY_RA 124
+# define KEY_ESC 53
+
+# define theta 2 * M_PI / 360
+
 typedef struct s_img
 {
 	void	*img_ptr;
@@ -32,16 +45,25 @@ typedef struct s_img
 	int		endian;
 }	t_img;
 
-
-/* player info */
-
-// position
-float px, py;
-
+typedef struct	s_state
+{
+	void	*mlx_ptr;
+	void	*win_ptr;
+	t_img	img;
+	double	posX;
+	double	posY;
+	double	dirX;
+	double	dirY;
+	double	planeX;
+	double	planeY;
+} t_state;
 
 /* functions */
 
-// init.c //
-void	init(void);
+// main.c
+void	draw_sight(t_state *state);
+
+// event.c
+int	event_key(int key, t_state *state);
 
 #endif
