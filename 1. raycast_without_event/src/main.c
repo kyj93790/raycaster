@@ -62,9 +62,9 @@ int main(void)
 	mlx_ptr = mlx_init();
 	win_ptr = mlx_new_window(mlx_ptr, w, h, "raycaster");
 
-	double posX = 22, posY = 12;		// start position of player
-	double dirX = -1, dirY = 0;			// initial direction (left)
-	double planeX = 0, planeY = 0.66;	// camera plane
+	double posX = 12, posY = 20;		// start position of player
+	double dirX = 0, dirY = -1;			// initial direction (left)
+	double planeX = 0.66, planeY = 0;	// camera plane
 	// printf("curr map : %d\n", worldMap[(int)posX][(int)posY]);
 
 	// double time = 0;
@@ -75,8 +75,8 @@ int main(void)
 	img.addr = mlx_get_data_addr(img.img_ptr, &(img.bits_per_pixel), &(img.line_len), &(img.endian));
 	for (int x = 0; x < w; x++)
 	{
-		double cameraX = -2*x/(double)w + 1;
-		// double cameraX = 2*x / (double)w - 1;
+		// double cameraX = -2*x/(double)w + 1;
+		double cameraX = 2*x / (double)w - 1;
 		double rayDirX = dirX + planeX*cameraX;
 		double rayDirY = dirY + planeY*cameraX;
 		// printf("rayDirX : %lf\n", rayDirX);
