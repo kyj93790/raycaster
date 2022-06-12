@@ -40,10 +40,9 @@ void	draw_img(t_img *img, int x, int y, int color)
 	*(unsigned int*)ptr = color;
 }
 
-void	draw_vertical_line(t_img *img, t_img *tex, int start, int end, int curr_w, int texX, double step)
+void	draw_vertical_line(t_img *img, t_img *tex, int start, int end, int curr_w, double texPos, int texX, double step)
 {
 	int	i;
-	double	texPos;
 
 	i = 0;
 	while (i < start)
@@ -51,7 +50,6 @@ void	draw_vertical_line(t_img *img, t_img *tex, int start, int end, int curr_w, 
 		draw_img(img, curr_w, i, 0);
 		i++;
 	}
-	texPos = 0;
 	while (i <= end)
 	{
 		int texY = (int)texPos;
@@ -139,10 +137,17 @@ void	draw_sight(t_state *state)
 
 		//Calculate height of line to draw on screen
 		int lineHeight = (int)(2*h / perpWallDist);
+		double step = (double)state->tex.texHeight / lineHeight;
 
 		//calculate lowest and highest pixel to fill in current stripe
+		double texPos;
+		texPos = 0;
 		int drawStart = -lineHeight / 2 + h / 2;
-		if(drawStart < 0)drawStart = 0;
+		if (drawStart < 0) {
+			// 만약 시야에서 벽이 잘려서 보여야 한다면 texture에서도 해당 부분은 건너뛰고 다음 pixel부터 추출해야 한다.
+			texPos = -drawStart * step;
+			drawStart = 0;
+		}
 		int drawEnd = lineHeight / 2 + h / 2;
 		if(drawEnd >= h)drawEnd = h - 1;
 
@@ -172,8 +177,7 @@ void	draw_sight(t_state *state)
 		int texX = wallX * state->tex.texWidth;
 		// 현재 window에 그리려고 하는 line에 tex를 할당할 것.
 		// 이 때 tex에서 얼마만큼 stepping을 하며 pixel을 뽑아낼 지 결정
-		double step = (double)state->tex.texHeight / lineHeight;
-		draw_vertical_line(&(state->img), curr_img, drawStart, drawEnd, x, texX, step);
+		draw_vertical_line(&(state->img), curr_img, drawStart, drawEnd, x, texPos, texX, step);
 	}
 }
 
