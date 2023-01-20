@@ -6,8 +6,8 @@
     - ceiling : start보다 작은 index들의 영역
     - floor : end보다 큰 index들의 영역
 
-- [x] x, y 좌표에 대한 고료
+- [x] x, y 좌표에 대한 고려
   - 삼각함수 공식을 생각할 때의 x, y좌표와 window 상의 좌표가 달라서 그대로 수식을 반영하면 left, right가 반대로 움직였음
-  - 이를 반대로 적용시켜서 처리
+  - 벡터, 각 변화에 따른 캐릭터 방향벡터 계산하여 해결
 
 ![화면 기록 2022-06-10 오후 3 32 57](https://user-images.githubusercontent.com/64132798/173007403-d08c098c-6625-4960-9d75-a4b8e08fd70f.gif)
